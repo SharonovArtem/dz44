@@ -1,0 +1,85 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp11
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+
+        }
+    }
+
+    class Warrior
+    {
+        protected int Hp;
+        protected int Damage;
+        protected int Armor;
+
+        public Warrior(int hp, int damage, int armor)
+        {
+            Hp = hp;
+            Damage = damage;
+            Armor = armor;
+        }
+
+        public void TakeDamage(int hp, int damage)
+        {
+            hp -= damage;
+        }
+    }
+
+    class Berserk : Warrior
+    {
+        public Berserk(int hp, int damage, int armor) : base (hp, damage, armor) { }
+
+        public void CallToBattle()
+        {
+
+        }
+    }
+
+    class Wizard : Warrior
+    {
+        public Wizard(int hp, int damage, int armor) : base(hp, damage, armor) { }
+
+        public void CreateTornado()
+        {
+
+        }
+    }
+
+    class Knight : Warrior
+    {
+        public Knight(int hp, int damage, int armor) : base(hp, damage, armor) { }
+
+        public void 
+    }
+
+    class Elf : Warrior
+    {
+        public Elf(int hp, int damage, int armor) : base(hp, damage, armor) { }
+
+    }
+
+    class Mechanic : Warrior
+    {
+        public Mechanic(int hp, int damage, int armor) : base(hp, damage, armor) { }
+
+        public void ExploseMine(int hp)
+        {
+            int mineDamage = 50;
+
+            
+        }
+    }
+
+    class BattleArea
+    {
+
+    }
+}
