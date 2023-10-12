@@ -1,85 +1,179 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ConsoleApp11
+namespace ConsoleApp9
 {
     internal class Program
     {
         static void Main(string[] args)
         {
+            Station station = new Station();
+            bool isWorking = true;
 
+            while (isWorking)
+            {
+                Console.WriteLine("Нажмите на Q чтобы создать поезд");
+                Console.WriteLine("Чтобы вывести информацию обо всех поездах нажмите W");
+                Console.WriteLine("Чтобы выйти нажмите Esc");
+                ConsoleKeyInfo keyInput = Console.ReadKey(true);
+
+                if (keyInput.Key == ConsoleKey.Q)
+                {
+                    station.CreateTrain();
+                }
+                else if (keyInput.Key == ConsoleKey.Escape)
+                {
+                    isWorking = false;
+                }
+                else if (keyInput.Key == ConsoleKey.W)
+                {
+                    station.ShowInfoAboutAboutTrainList();
+                }
+            }
         }
     }
 
-    class Warrior
+    class Direction
     {
-        protected int Hp;
-        protected int Damage;
-        protected int Armor;
+        private string _startPoint;
+        private string _finishPoint;
 
-        public Warrior(int hp, int damage, int armor)
+        public Direction(string startPoint, string finishPoint)
         {
-            Hp = hp;
-            Damage = damage;
-            Armor = armor;
+            _startPoint = startPoint;
+            _finishPoint = finishPoint;
         }
 
-        public void TakeDamage(int hp, int damage)
+        public void AddDirection()
         {
-            hp -= damage;
-        }
-    }
+            Console.WriteLine("Откуда поедет поезд?");
+            _startPoint = Console.ReadLine();
 
-    class Berserk : Warrior
-    {
-        public Berserk(int hp, int damage, int armor) : base (hp, damage, armor) { }
-
-        public void CallToBattle()
-        {
-
-        }
-    }
-
-    class Wizard : Warrior
-    {
-        public Wizard(int hp, int damage, int armor) : base(hp, damage, armor) { }
-
-        public void CreateTornado()
-        {
-
-        }
-    }
-
-    class Knight : Warrior
-    {
-        public Knight(int hp, int damage, int armor) : base(hp, damage, armor) { }
-
-        public void 
-    }
-
-    class Elf : Warrior
-    {
-        public Elf(int hp, int damage, int armor) : base(hp, damage, armor) { }
-
-    }
-
-    class Mechanic : Warrior
-    {
-        public Mechanic(int hp, int damage, int armor) : base(hp, damage, armor) { }
-
-        public void ExploseMine(int hp)
-        {
-            int mineDamage = 50;
-
+            Console.WriteLine("Какая конечная точка?");
+            string userInput = Console.ReadLine();
+            if (userInput != _startPoint)
+            {
+                _finishPoint = userInput;
+            }
             
         }
+
+        public string ReturnStartPoint()
+        {
+            return _startPoint;
+        }
+
+        public string ReturnFinishPoint()
+        {
+            return _finishPoint;
+        }
+
+        public void ShowDirection()
+        {
+            Console.WriteLine(_startPoint + " - " + _finishPoint);
+        }
     }
 
-    class BattleArea
+    class Van
     {
+        private int _maxAccomodation;
 
+        public Van(int maxAccomodation)
+        {
+            _maxAccomodation = maxAccomodation;
+        }
+
+        public int GetLenght()
+        {
+            return _maxAccomodation;
+        }
+    }
+
+    class Station
+    {
+        private List<Train> _trains = new List<Train>();
+        private Direction _direction = new Direction(null, null);
+        private int _passengersNumber;
+        private int _occupiedVans = 0;
+        private int _occupiedPlaces = 0;
+
+        public void ComplementVan(Van van)
+        {
+            _occupiedVans++;
+            _occupiedPlaces += van.GetLenght();
+        }
+
+        public void CreateTrain()
+        {
+            Random random = new Random();
+            _direction.AddDirection();
+
+            _passengersNumber = random.Next(50, 400);
+
+            while (_occupiedPlaces < _passengersNumber)
+            {
+                if (random.Next(0, 2) == 0)
+                {
+                    Van van = new Van(50);
+                    ComplementVan(van);
+                }
+                else if (random.Next(0, 2) == 1)
+                {
+                    Van van = new Van(75);
+                    ComplementVan(van);
+                }
+                else if (random.Next(0, 3) == 2)
+                {
+                    Van van = new Van(100);
+                    ComplementVan(van);
+                }
+            }
+
+            Train train = new Train(_occupiedVans, _passengersNumber, _direction.ReturnStartPoint(), _direction.ReturnFinishPoint());
+            _trains.Add(train);
+
+            ShowInfoAboutCreatedTrain();
+        }
+
+        public void ShowInfoAboutCreatedTrain()
+        {
+            Console.WriteLine("Количество вагонов в поезде: " + _occupiedVans);
+            Console.WriteLine("Общее количество занятых мест: " + _passengersNumber);
+            Console.WriteLine("Направление: ");
+            _direction.ShowDirection();
+        }
+
+        public void ShowInfoAboutAboutTrainList()
+        {
+            for (int i = 0; i < _trains.Count; i++)
+            {
+                Console.WriteLine("Рейс номер: " + i + ":");
+                _trains[i].ShowInfo();
+            }
+        }
+    }
+
+    class Train
+    {
+        private int _vansNumber;
+        private int _passengersNumber;
+        private string _startPoint;
+        private string _finishPoint;
+
+        public Train(int vans, int passengersNumber, string startPoint, string FinishPoint)
+        {
+            _vansNumber = vans;
+            _passengersNumber = passengersNumber;
+            _startPoint = startPoint;
+            _finishPoint = FinishPoint;
+        }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine(_vansNumber);
+            Console.WriteLine(_passengersNumber);
+            Console.WriteLine(_startPoint);
+            Console.WriteLine(_finishPoint);
+        }
     }
 }
