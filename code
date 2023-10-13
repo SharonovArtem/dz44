@@ -51,8 +51,8 @@ namespace ConsoleApp9
 
             Console.WriteLine("Какая конечная точка?");
             string userInput = Console.ReadLine();
-           
-            _finishPoint = userInput;            
+
+            _finishPoint = userInput;
         }
 
         public string ReturnStartPoint()
@@ -131,7 +131,7 @@ namespace ConsoleApp9
                 }
 
                 Train train = new Train(_occupiedVans, _passengersNumber, _direction.ReturnStartPoint(), _direction.ReturnFinishPoint());
-                
+
                 _trains.Add(train);
 
                 ShowInfoAboutCreatedTrain();
