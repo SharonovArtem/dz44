@@ -12,8 +12,8 @@ namespace ConsoleApp9
 
             while (isWorking)
             {
+                station.ShowInfoAboutAboutTrainList();
                 Console.WriteLine("Нажмите на Q чтобы создать поезд");
-                Console.WriteLine("Чтобы вывести информацию обо всех поездах нажмите W");
                 Console.WriteLine("Чтобы выйти нажмите Esc");
                 ConsoleKeyInfo keyInput = Console.ReadKey(true);
 
@@ -25,162 +25,160 @@ namespace ConsoleApp9
                 {
                     isWorking = false;
                 }
-                else if (keyInput.Key == ConsoleKey.W)
-                {
-                    station.ShowInfoAboutAboutTrainList();
-                }
             }
         }
     }
 
     class Direction
     {
-        private string _startPoint;
-        private string _finishPoint;
+        public string StartPoint { get; private set; }
+        public string FinishPoint { get; private set; }
 
         public Direction(string startPoint, string finishPoint)
         {
-            _startPoint = startPoint;
-            _finishPoint = finishPoint;
+            StartPoint = startPoint;
+            FinishPoint = finishPoint;
         }
 
         public void AddDirection()
         {
-            Console.WriteLine("Откуда поедет поезд?");
-            _startPoint = Console.ReadLine();
+            bool isWorking = true;
 
-            Console.WriteLine("Какая конечная точка?");
-            string userInput = Console.ReadLine();
+            while (isWorking)
+            {
+                Console.WriteLine("Откуда поедет поезд?");
+                StartPoint = Console.ReadLine();
 
-            _finishPoint = userInput;
-        }
+                Console.WriteLine("Какая конечная точка?");
+                FinishPoint = Console.ReadLine();
 
-        public string ReturnStartPoint()
-        {
-            return _startPoint;
-        }
-
-        public string ReturnFinishPoint()
-        {
-            return _finishPoint;
+                if (FinishPoint != StartPoint)
+                {
+                    isWorking = false;
+                }
+                else
+                {
+                    Console.WriteLine("Не удалось создать поезд");
+                }
+            }
         }
 
         public void ShowDirection()
         {
-            Console.WriteLine(_startPoint + " - " + _finishPoint);
+            Console.WriteLine(StartPoint + " - " + FinishPoint);
         }
     }
 
     class Van
     {
-        private int _maxAccomodation;
+        public int MaxAccomodation { get; private set; }
 
         public Van(int maxAccomodation)
         {
-            _maxAccomodation = maxAccomodation;
-        }
-
-        public int GetLenght()
-        {
-            return _maxAccomodation;
+            MaxAccomodation = maxAccomodation;
         }
     }
 
     class Station
     {
-        private List<Train> _trains = new List<Train>();
-        private Direction _direction = new Direction(null, null);
-        private int _passengersNumber;
-        private int _occupiedVans = 0;
-        private int _occupiedPlaces = 0;
-
-        public void ComplementVan(Van van)
-        {
-            _occupiedVans++;
-            _occupiedPlaces += van.GetLenght();
-        }
-
+        private List<Flight> _flights = new List<Flight>();
+        
         public void CreateTrain()
         {
+            int _passengersNumber;
+            int _occupiedPlaces = 0;
+            int minimalPassangersNumber = 50;
+            int maximalPassangersNumber = 400;
+            int sizeOfSmallVan = 50;
+            int sizeOfMediumVan = 75;
+            int sizeOfLargeVan = 100;
+            int smallVanNumber = 0;
+            int mediumVanNumber = 1;
+            int largeVanNumber = 2;
+            int maximalRandomNumber = 3;           
+            int _occupiedVansNumber = 0;
+            Direction _direction = new Direction(null, null);
+            List<Van> _occupiedVans = new List<Van>();
+
             _direction.AddDirection();
 
-            if (_direction.ReturnFinishPoint() != _direction.ReturnStartPoint())
+            Random random = new Random();
+
+            _passengersNumber = random.Next(minimalPassangersNumber, maximalPassangersNumber);
+
+            while (_occupiedPlaces < _passengersNumber)
             {
-                Random random = new Random();
+                int typeOfVan = random.Next(smallVanNumber, maximalRandomNumber);
 
-                _passengersNumber = random.Next(50, 400);
-
-                while (_occupiedPlaces < _passengersNumber)
+                if (typeOfVan == smallVanNumber)
                 {
-                    int typeOfTrain = random.Next(0, 2);
-                    if (typeOfTrain == 0)
-                    {
-                        Van van = new Van(50);
-                        ComplementVan(van);
-                    }
-                    else if (typeOfTrain == 1)
-                    {
-                        Van van = new Van(75);
-                        ComplementVan(van);
-                    }
-                    else if (typeOfTrain == 2)
-                    {
-                        Van van = new Van(100);
-                        ComplementVan(van);
-                    }
+                    Van van = new Van(sizeOfSmallVan);
+                    _occupiedVans.Add(van);
+                    _occupiedVansNumber++;
+                    _occupiedPlaces += van.MaxAccomodation;
                 }
-
-                Train train = new Train(_occupiedVans, _passengersNumber, _direction.ReturnStartPoint(), _direction.ReturnFinishPoint());
-
-                _trains.Add(train);
-
-                ShowInfoAboutCreatedTrain();
+                else if (typeOfVan == mediumVanNumber)
+                {
+                    Van van = new Van(sizeOfMediumVan);
+                    _occupiedVans.Add(van);
+                    _occupiedVansNumber++;
+                    _occupiedPlaces += van.MaxAccomodation;
+                }
+                else if (typeOfVan == largeVanNumber)
+                {
+                    Van van = new Van(sizeOfLargeVan);
+                    _occupiedVans.Add(van);
+                    _occupiedVansNumber++;
+                    _occupiedPlaces += van.MaxAccomodation;
+                }
             }
-            else
-            {
-                Console.WriteLine("Не удалось создать поезд");
-            }
-        }
 
-        public void ShowInfoAboutCreatedTrain()
-        {
-            Console.WriteLine("Количество вагонов в поезде: " + _occupiedVans + " вагонов");
+            Flight train = new Flight(_direction, _occupiedVans, _occupiedVansNumber, _passengersNumber);
+
+            _flights.Add(train);
+
+            Console.WriteLine("Количество вагонов в поезде: " + _occupiedVansNumber + " вагонов");
             Console.WriteLine("Общее количество занятых мест: " + _passengersNumber + " мест");
-            Console.WriteLine("Направление: ");
+            Console.WriteLine("Направление поезда: ");
             _direction.ShowDirection();
         }
 
         public void ShowInfoAboutAboutTrainList()
         {
-            for (int i = 0; i < _trains.Count; i++)
+            for (int i = 0; i < _flights.Count; i++)
             {
                 Console.WriteLine("Рейс номер: " + i + ":");
-                _trains[i].ShowInfo();
+                _flights[i].ShowInfo();
             }
         }
     }
 
-    class Train
+    class Flight
     {
+        private List<Van> _occupiedVans;
         private int _vansNumber;
         private int _passengersNumber;
-        private string _startPoint;
-        private string _finishPoint;
+        private Direction _direction;
 
-        public Train(int vans, int passengersNumber, string startPoint, string FinishPoint)
+        public Flight(Direction direction, List<Van> occupiedVans, int vans, int passengersNumber)
         {
+            _occupiedVans = occupiedVans;
             _vansNumber = vans;
             _passengersNumber = passengersNumber;
-            _startPoint = startPoint;
-            _finishPoint = FinishPoint;
+            _direction = direction;
         }
 
         public void ShowInfo()
         {
             Console.WriteLine(_vansNumber);
             Console.WriteLine(_passengersNumber);
-            Console.WriteLine(_startPoint);
-            Console.WriteLine(_finishPoint);
+            Console.WriteLine(_direction.StartPoint);
+            Console.WriteLine(_direction.FinishPoint);
+        }
+
+        public void AddVan(Van van)
+        {
+            _occupiedVans.Add(van);
         }
     }
 }
