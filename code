@@ -31,14 +31,14 @@ namespace ConsoleApp9
 
     class Direction
     {
-        public string StartPoint { get; private set; }
-        public string FinishPoint { get; private set; }
-
         public Direction(string startPoint, string finishPoint)
         {
             StartPoint = startPoint;
             FinishPoint = finishPoint;
         }
+
+        public string StartPoint { get; private set; }
+        public string FinishPoint { get; private set; }
 
         public void AddDirection()
         {
@@ -58,7 +58,7 @@ namespace ConsoleApp9
                 }
                 else
                 {
-                    Console.WriteLine("Не удалось создать поезд");
+                    Console.WriteLine("Пункт отправления не может быть равен пункту прибытия. Введите значения заново");
                 }
             }
         }
@@ -82,11 +82,11 @@ namespace ConsoleApp9
     class Station
     {
         private List<Flight> _flights = new List<Flight>();
-        
+
         public void CreateTrain()
         {
-            int _passengersNumber;
-            int _occupiedPlaces = 0;
+            int passengersNumber;
+            int occupiedPlaces = 0;
             int minimalPassangersNumber = 50;
             int maximalPassangersNumber = 400;
             int sizeOfSmallVan = 50;
@@ -95,52 +95,52 @@ namespace ConsoleApp9
             int smallVanNumber = 0;
             int mediumVanNumber = 1;
             int largeVanNumber = 2;
-            int maximalRandomNumber = 3;           
-            int _occupiedVansNumber = 0;
-            Direction _direction = new Direction(null, null);
-            List<Van> _occupiedVans = new List<Van>();
+            int maximalRandomNumber = 3;
+            int occupiedVansNumber = 0;
+            Direction direction = new Direction(null, null);
+            List<Van> occupiedVans = new List<Van>();
 
-            _direction.AddDirection();
+            direction.AddDirection();
 
             Random random = new Random();
 
-            _passengersNumber = random.Next(minimalPassangersNumber, maximalPassangersNumber);
+            passengersNumber = random.Next(minimalPassangersNumber, maximalPassangersNumber);
 
-            while (_occupiedPlaces < _passengersNumber)
+            while (occupiedPlaces < passengersNumber)
             {
                 int typeOfVan = random.Next(smallVanNumber, maximalRandomNumber);
 
                 if (typeOfVan == smallVanNumber)
                 {
                     Van van = new Van(sizeOfSmallVan);
-                    _occupiedVans.Add(van);
-                    _occupiedVansNumber++;
-                    _occupiedPlaces += van.MaxAccomodation;
+                    occupiedVans.Add(van);
+                    occupiedVansNumber++;
+                    occupiedPlaces += van.MaxAccomodation;
                 }
                 else if (typeOfVan == mediumVanNumber)
                 {
                     Van van = new Van(sizeOfMediumVan);
-                    _occupiedVans.Add(van);
-                    _occupiedVansNumber++;
-                    _occupiedPlaces += van.MaxAccomodation;
+                    occupiedVans.Add(van);
+                    occupiedVansNumber++;
+                    occupiedPlaces += van.MaxAccomodation;
                 }
                 else if (typeOfVan == largeVanNumber)
                 {
                     Van van = new Van(sizeOfLargeVan);
-                    _occupiedVans.Add(van);
-                    _occupiedVansNumber++;
-                    _occupiedPlaces += van.MaxAccomodation;
+                    occupiedVans.Add(van);
+                    occupiedVansNumber++;
+                    occupiedPlaces += van.MaxAccomodation;
                 }
             }
 
-            Flight train = new Flight(_direction, _occupiedVans, _occupiedVansNumber, _passengersNumber);
+            Flight train = new Flight(direction, occupiedVans, occupiedVansNumber, passengersNumber);
 
             _flights.Add(train);
 
-            Console.WriteLine("Количество вагонов в поезде: " + _occupiedVansNumber + " вагонов");
-            Console.WriteLine("Общее количество занятых мест: " + _passengersNumber + " мест");
+            Console.WriteLine("Количество вагонов в поезде: " + occupiedVansNumber + " вагонов");
+            Console.WriteLine("Общее количество занятых мест: " + passengersNumber + " мест");
             Console.WriteLine("Направление поезда: ");
-            _direction.ShowDirection();
+            direction.ShowDirection();
         }
 
         public void ShowInfoAboutAboutTrainList()
@@ -155,11 +155,6 @@ namespace ConsoleApp9
 
     class Flight
     {
-        private List<Van> _occupiedVans;
-        private int _vansNumber;
-        private int _passengersNumber;
-        private Direction _direction;
-
         public Flight(Direction direction, List<Van> occupiedVans, int vans, int passengersNumber)
         {
             _occupiedVans = occupiedVans;
@@ -168,12 +163,17 @@ namespace ConsoleApp9
             _direction = direction;
         }
 
+        private List<Van> _occupiedVans;
+        private int _vansNumber;
+        private int _passengersNumber;
+        private Direction _direction;
+
         public void ShowInfo()
         {
-            Console.WriteLine(_vansNumber);
-            Console.WriteLine(_passengersNumber);
-            Console.WriteLine(_direction.StartPoint);
-            Console.WriteLine(_direction.FinishPoint);
+            Console.WriteLine("Количество вагонов: " + _vansNumber);
+            Console.WriteLine("Всего пассажиров: " + _passengersNumber);
+            Console.WriteLine("Точка отправления: " + _direction.StartPoint);
+            Console.WriteLine("Точка прибытия: " + _direction.FinishPoint);
         }
 
         public void AddVan(Van van)
