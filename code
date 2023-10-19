@@ -40,7 +40,7 @@ namespace ConsoleApp9
         public string StartPoint { get; private set; }
         public string FinishPoint { get; private set; }
 
-        public void AddDirection()
+        public void Add()
         {
             bool isWorking = true;
 
@@ -63,7 +63,7 @@ namespace ConsoleApp9
             }
         }
 
-        public void ShowDirection()
+        public void Shown()
         {
             Console.WriteLine(StartPoint + " - " + FinishPoint);
         }
@@ -71,12 +71,12 @@ namespace ConsoleApp9
 
     class Van
     {
-        public int MaxAccomodation { get; private set; }
-
         public Van(int maxAccomodation)
         {
             MaxAccomodation = maxAccomodation;
         }
+
+        public int MaxAccomodation { get; private set; }
     }
 
     class Station
@@ -100,7 +100,7 @@ namespace ConsoleApp9
             Direction direction = new Direction(null, null);
             List<Van> occupiedVans = new List<Van>();
 
-            direction.AddDirection();
+            direction.Add();
 
             Random random = new Random();
 
@@ -140,7 +140,7 @@ namespace ConsoleApp9
             Console.WriteLine("Количество вагонов в поезде: " + occupiedVansNumber + " вагонов");
             Console.WriteLine("Общее количество занятых мест: " + passengersNumber + " мест");
             Console.WriteLine("Направление поезда: ");
-            direction.ShowDirection();
+            direction.Shown();
         }
 
         public void ShowInfoAboutAboutTrainList()
